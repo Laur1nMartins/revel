@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"fmt"
 	"html/template"
 	"os"
@@ -187,7 +188,7 @@ func init() {
 	}, 0)
 }
 
-func I18nFilter(c *Controller, fc []Filter) {
+func I18nFilter(ctx context.Context, c *Controller, fc []Filter) {
 	foundLocale := false
 	// Search for a parameter first
 	if localeParameterName != "" {
@@ -209,7 +210,7 @@ func I18nFilter(c *Controller, fc []Filter) {
 			setCurrentLocaleControllerArguments(c, "")
 		}
 	}
-	fc[0](c, fc[1:])
+	fc[0](ctx, c, fc[1:])
 }
 
 // Set the current locale controller argument (CurrentLocaleControllerArg) with the given locale.

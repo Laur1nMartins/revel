@@ -4,8 +4,10 @@
 
 package revel
 
+import "context"
+
 // Filter type definition for Revel's filter
-type Filter func(c *Controller, filterChain []Filter)
+type Filter func(ctx context.Context, c *Controller, filterChain []Filter)
 
 // Filters is the default set of global filters.
 // It may be set by the application on initialization.
@@ -26,6 +28,6 @@ var Filters = []Filter{
 
 // NilFilter and NilChain are helpful in writing filter tests.
 var (
-	NilFilter = func(_ *Controller, _ []Filter) {}
+	NilFilter = func(_ context.Context, _ *Controller, _ []Filter) {}
 	NilChain  = []Filter{NilFilter}
 )

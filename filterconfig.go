@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"reflect"
 	"strings"
 )
@@ -203,12 +204,12 @@ func FilterEq(a, b Filter) bool {
 
 // FilterConfiguringFilter is a filter stage that customizes the remaining
 // filter chain for the action being invoked.
-func FilterConfiguringFilter(c *Controller, fc []Filter) {
+func FilterConfiguringFilter(ctx context.Context, c *Controller, fc []Filter) {
 	if newChain := getOverrideChain(c.Name, c.Action); newChain != nil {
-		newChain[0](c, newChain[1:])
+		newChain[0](ctx, c, newChain[1:])
 		return
 	}
-	fc[0](c, fc[1:])
+	fc[0](ctx, c, fc[1:])
 }
 
 // getOverrideChain retrieves the overrides for the action that is set

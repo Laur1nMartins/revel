@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"html/template"
 	"net/http"
 	"testing"
@@ -130,18 +131,20 @@ func TestHasAcceptLanguageHeader(t *testing.T) {
 func TestBeforeRequest(t *testing.T) {
 	loadTestI18nConfig(t)
 
+	ctx := context.Background()
+
 	c := buildEmptyRequest()
-	if I18nFilter(c, NilChain); c.Request.Locale != "" {
+	if I18nFilter(ctx, c, NilChain); c.Request.Locale != "" {
 		t.Errorf("Expected to find current language '%s' in controller, found '%s' instead", "", c.Request.Locale)
 	}
 
 	c = buildRequestWithCookie("APP_LANG", "en-US")
-	if I18nFilter(c, NilChain); c.Request.Locale != "en-US" {
+	if I18nFilter(ctx, c, NilChain); c.Request.Locale != "en-US" {
 		t.Errorf("Expected to find current language '%s' in controller, found '%s' instead", "en-US", c.Request.Locale)
 	}
 
 	c = buildRequestWithAcceptLanguages("en-GB", "en-US")
-	if I18nFilter(c, NilChain); c.Request.Locale != "en-GB" {
+	if I18nFilter(ctx, c, NilChain); c.Request.Locale != "en-GB" {
 		t.Errorf("Expected to find current language '%s' in controller, found '%s' instead", "en-GB", c.Request.Locale)
 	}
 }
@@ -189,7 +192,6 @@ func BenchmarkI18nMessageWithArguments(b *testing.B) {
 		}))
 	})
 
-
 	for i := 0; i < b.N; i++ {
 		Message("en", "arguments.string", "Vincent Hanna")
 	}
@@ -201,7 +203,6 @@ func BenchmarkI18nMessageWithFoldingAndArguments(b *testing.B) {
 			return nil
 		}))
 	})
-
 
 	for i := 0; i < b.N; i++ {
 		Message("en", "folded.arguments", 12345)

@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -649,10 +650,11 @@ func BenchmarkRouterFilter(b *testing.B) {
 		ParseParams(c.Params, c.Request)
 	}
 
+	ctx := context.Background()
 	b.ResetTimer()
 	for i := 0; i < b.N/len(controllers); i++ {
 		for _, c := range controllers {
-			RouterFilter(c, NilChain)
+			RouterFilter(ctx, c, NilChain)
 		}
 	}
 }

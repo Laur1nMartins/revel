@@ -1,12 +1,13 @@
 package revel
 
 import (
+	"context"
 	"reflect"
 )
 
 // Autocalls any defined before and after methods on the target controller
 // If either calls returns a value then the result is returned
-func BeforeAfterFilter(c *Controller, fc []Filter) {
+func BeforeAfterFilter(ctx context.Context, c *Controller, fc []Filter) {
 	defer func() {
 		if resultValue := beforeAfterFilterInvoke(FINALLY, c); resultValue != nil && !resultValue.IsNil() {
 			c.Result = resultValue.Interface().(Result)
@@ -24,7 +25,7 @@ func BeforeAfterFilter(c *Controller, fc []Filter) {
 		c.Result = resultValue.Interface().(Result)
 		return
 	}
-	fc[0](c, fc[1:])
+	fc[0](ctx, c, fc[1:])
 	if resultValue := beforeAfterFilterInvoke(AFTER, c); resultValue != nil && !resultValue.IsNil() {
 		c.Result = resultValue.Interface().(Result)
 	}

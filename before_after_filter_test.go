@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"testing"
 )
 
@@ -25,7 +26,7 @@ type failingFilter struct {
 	t *testing.T
 }
 
-func (f failingFilter) FailIfCalled(c *Controller, filterChain []Filter) {
+func (f failingFilter) FailIfCalled(ctx context.Context, c *Controller, filterChain []Filter) {
 	f.t.Error("Filter should not have been called")
 }
 
@@ -47,5 +48,5 @@ func TestInterceptorsNotCalledIfBeforeReturns(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	BeforeAfterFilter(c, []Filter{failingFilter{t}.FailIfCalled})
+	BeforeAfterFilter(context.Background(), c, []Filter{failingFilter{t}.FailIfCalled})
 }

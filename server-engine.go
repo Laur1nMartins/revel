@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"errors"
 	"io"
 	"mime/multipart"
@@ -68,7 +69,7 @@ type (
 
 	// Expected response for HTTP_SERVER_HEADER type (if implemented)
 	ServerHeader interface {
-		SetCookie(cookie string) // Sets the cookie
+		SetCookie(cookie string)                              // Sets the cookie
 		GetCookie(key string) (value ServerCookie, err error) // Gets the cookie
 		Set(key string, value string)
 		Add(key string, value string)
@@ -167,7 +168,7 @@ func handleInternal(ctx ServerContext) {
 	start := time.Now()
 	var c *Controller
 	if RevelConfig.Controller.Reuse {
-		c         = RevelConfig.Controller.Stack.Pop().(*Controller)
+		c = RevelConfig.Controller.Stack.Pop().(*Controller)
 		defer func() {
 			RevelConfig.Controller.Stack.Push(c)
 		}()
@@ -175,8 +176,9 @@ func handleInternal(ctx ServerContext) {
 		c = NewControllerEmpty()
 	}
 
-	var (
+	c.Ctx = context.Background()
 
+	var (
 		req, resp = c.Request, c.Response
 	)
 	c.SetController(ctx)
@@ -190,7 +192,7 @@ func handleInternal(ctx ServerContext) {
 	c.Log = AppLog.New("ip", clientIP,
 		"path", req.GetPath(), "method", req.Method)
 	// Call the first filter, this will process the request
-	Filters[0](c, Filters[1:])
+	Filters[0](c.Ctx, c, Filters[1:])
 	if c.Result != nil {
 		c.Result.Apply(req, resp)
 	} else if c.Response.Status != 0 {

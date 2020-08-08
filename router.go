@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"encoding/csv"
 	"fmt"
 	"io"
@@ -17,9 +18,10 @@ import (
 	"os"
 	"sync"
 
+	"errors"
+
 	"github.com/revel/pathtree"
 	"github.com/revel/revel/logger"
-	"errors"
 )
 
 const (
@@ -319,17 +321,17 @@ func splitActionPath(actionPathData *ActionPathData, actionPath string, useCache
 			if moduleSource, found := ModuleByName(controllerNamespace[:len(controllerNamespace)-1]); found {
 				foundModuleSource = moduleSource
 				controllerNamespace = moduleSource.Namespace()
-				log = log.New("namespace",controllerNamespace)
+				log = log.New("namespace", controllerNamespace)
 				log.Debug("Found module namespace")
 			} else {
 				log.Warnf("splitActionPath: Unable to find module %s for action: %s", controllerNamespace[:len(controllerNamespace)-1], actionPath)
 			}
 			controllerName = controllerName[i+1:]
-			log = log.New("controllerShortName",controllerName)
+			log = log.New("controllerShortName", controllerName)
 			// Check for the type of controller
 			typeOfController = foundModuleSource.ControllerByName(controllerName, methodName)
 			found = typeOfController != nil
-			log.Debug("Found controller","found",found,"type",typeOfController)
+			log.Debug("Found controller", "found", found, "type", typeOfController)
 		} else if controllerName[0] != ':' {
 			// First attempt to find the controller in the module source
 			if foundModuleSource != nil {
@@ -620,15 +622,15 @@ func (a *ActionDefinition) String() string {
 }
 
 func (router *Router) Reverse(action string, argValues map[string]string) (ad *ActionDefinition) {
-	ad, err := router.ReverseError(action,argValues,nil)
-	if err!=nil {
+	ad, err := router.ReverseError(action, argValues, nil)
+	if err != nil {
 		routerLog.Error("splitActionPath: Failed to find reverse route", "action", action, "arguments", argValues)
 	}
 	return ad
 }
 func (router *Router) ReverseError(action string, argValues map[string]string, req *Request) (ad *ActionDefinition, err error) {
 	var log logger.MultiLogger
-	if req!=nil {
+	if req != nil {
 		log = req.controller.Log.New("action", action)
 	} else {
 		log = routerLog.New("action", action)
@@ -751,7 +753,7 @@ func (router *Router) ReverseError(action string, argValues map[string]string, r
 			star = true
 		}
 
-		log.Infof("Reversing action %s to %s Using Route %#v",action,urlPath,pathData.Route)
+		log.Infof("Reversing action %s to %s Using Route %#v", action, urlPath, pathData.Route)
 
 		ad = &ActionDefinition{
 			URL:    urlPath,
@@ -769,7 +771,7 @@ func (router *Router) ReverseError(action string, argValues map[string]string, r
 	return
 }
 
-func RouterFilter(c *Controller, fc []Filter) {
+func RouterFilter(ctx context.Context, c *Controller, fc []Filter) {
 	// Figure out the Controller/Action
 	route := MainRouter.Route(c.Request)
 	if route == nil {
@@ -812,7 +814,7 @@ func RouterFilter(c *Controller, fc []Filter) {
 		}
 	}
 
-	fc[0](c, fc[1:])
+	fc[0](ctx, c, fc[1:])
 }
 
 // HTTPMethodOverride overrides allowed http methods via form or browser param
@@ -852,7 +854,7 @@ func HTTPMethodOverride(c *Controller, fc []Filter) {
 		}
 	}
 
-	fc[0](c, fc[1:]) // Execute the next filter stage.
+	fc[0](context.Background(), c, fc[1:]) // Execute the next filter stage.
 }
 
 func init() {

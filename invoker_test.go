@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"net/url"
 	"reflect"
 	"testing"
@@ -128,7 +129,8 @@ func BenchmarkInvoker(b *testing.B) {
 	c.Params.Set("id", "3")
 
 	b.ResetTimer()
+	ctx := context.Background()
 	for i := 0; i < b.N; i++ {
-		ActionInvoker(c, nil)
+		ActionInvoker(ctx, c, nil)
 	}
 }

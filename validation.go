@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -253,12 +254,12 @@ func (v *Validation) Check(obj interface{}, checks ...Validator) *ValidationResu
 }
 
 // ValidationFilter revel Filter function to be hooked into the filter chain.
-func ValidationFilter(c *Controller, fc []Filter) {
+func ValidationFilter(ctx context.Context, c *Controller, fc []Filter) {
 	// If json request, we shall assume json response is intended,
 	// as such no validation cookies should be tied response
 	if c.Params != nil && c.Params.JSON != nil {
 		c.Validation = &Validation{Request: c.Request, Translator: MessageFunc}
-		fc[0](c, fc[1:])
+		fc[0](ctx, c, fc[1:])
 	} else {
 		errors, err := restoreValidationErrors(c.Request)
 		c.Validation = &Validation{
@@ -269,7 +270,7 @@ func ValidationFilter(c *Controller, fc []Filter) {
 		}
 		hasCookie := (err != http.ErrNoCookie)
 
-		fc[0](c, fc[1:])
+		fc[0](ctx, c, fc[1:])
 
 		// Add Validation errors to ViewArgs.
 		c.ViewArgs["errors"] = c.Validation.ErrorMap()

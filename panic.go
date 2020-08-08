@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"runtime/debug"
@@ -12,13 +13,13 @@ import (
 
 // PanicFilter wraps the action invocation in a protective defer blanket that
 // converts panics into 500 error pages.
-func PanicFilter(c *Controller, fc []Filter) {
+func PanicFilter(ctx context.Context, c *Controller, fc []Filter) {
 	defer func() {
 		if err := recover(); err != nil {
 			handleInvocationPanic(c, err)
 		}
 	}()
-	fc[0](c, fc[1:])
+	fc[0](ctx, c, fc[1:])
 }
 
 // This function handles a panic in an action invocation.

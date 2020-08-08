@@ -5,13 +5,15 @@
 package revel
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
 
-	"github.com/fsnotify/fsnotify"
 	"time"
+
+	"github.com/fsnotify/fsnotify"
 )
 
 // Listener is an interface for receivers of filesystem events.
@@ -287,7 +289,7 @@ func (w *Watcher) rebuildRequired(ev fsnotify.Event, listener Listener) bool {
 	return true
 }
 
-var WatchFilter = func(c *Controller, fc []Filter) {
+var WatchFilter = func(ctx context.Context, c *Controller, fc []Filter) {
 	if MainWatcher != nil {
 		err := MainWatcher.Notify()
 		if err != nil {
@@ -295,5 +297,5 @@ var WatchFilter = func(c *Controller, fc []Filter) {
 			return
 		}
 	}
-	fc[0](c, fc[1:])
+	fc[0](ctx, c, fc[1:])
 }

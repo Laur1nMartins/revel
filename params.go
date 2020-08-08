@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
@@ -163,7 +164,7 @@ func (p *Params) calcValues() url.Values {
 	return values
 }
 
-func ParamsFilter(c *Controller, fc []Filter) {
+func ParamsFilter(ctx context.Context, c *Controller, fc []Filter) {
 	ParseParams(c.Params, c.Request)
 
 	// Clean up from the request.
@@ -176,5 +177,5 @@ func ParamsFilter(c *Controller, fc []Filter) {
 		}
 	}()
 
-	fc[0](c, fc[1:])
+	fc[0](ctx, c, fc[1:])
 }

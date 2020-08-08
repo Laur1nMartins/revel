@@ -3,11 +3,11 @@ package revel
 // SessionFilter is a Revel Filter that retrieves and sets the session cookie.
 // Within Revel, it is available as a Session attribute on Controller instances.
 // The name of the Session cookie is set as CookiePrefix + "_SESSION".
-import ()
+import "context"
 
 var sessionLog = RevelLog.New("section", "session")
 
-func SessionFilter(c *Controller, fc []Filter) {
+func SessionFilter(ctx context.Context, c *Controller, fc []Filter) {
 	CurrentSessionEngine.Decode(c)
 	sessionWasEmpty := c.Session.Empty()
 
@@ -15,7 +15,7 @@ func SessionFilter(c *Controller, fc []Filter) {
 	c.ViewArgs["session"] = c.Session
 	c.ViewArgs["_controller"] = c
 
-	fc[0](c, fc[1:])
+	fc[0](ctx, c, fc[1:])
 
 	// If session is not empty or if session was not empty then
 	// pass it back to the session engine to be encoded

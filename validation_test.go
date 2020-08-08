@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -28,7 +29,8 @@ func validationTester(req *Request, fn func(c *Controller)) *httptest.ResponseRe
 	c := NewTestController(recorder, req.In.GetRaw().(*http.Request))
 	c.Request = req
 
-	ValidationFilter(c, []Filter{I18nFilter, func(c *Controller, _ []Filter) {
+	ctx := context.Background()
+	ValidationFilter(ctx, c, []Filter{I18nFilter, func(_ context.Context, c *Controller, _ []Filter) {
 		fn(c)
 	}})
 	return recorder

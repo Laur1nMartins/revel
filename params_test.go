@@ -6,6 +6,7 @@ package revel
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -92,8 +93,9 @@ func BenchmarkParams(b *testing.B) {
 	c := NewTestController(nil, showRequest)
 	c.Params = &Params{}
 
+	ctx := context.Background()
 	for i := 0; i < b.N; i++ {
-		ParamsFilter(c, NilChain)
+		ParamsFilter(ctx, c, NilChain)
 	}
 }
 
@@ -101,7 +103,8 @@ func TestMultipartForm(t *testing.T) {
 	c := NewTestController(nil, getMultipartRequest())
 	c.Params = &Params{}
 
-	ParamsFilter(c, NilChain)
+	ctx := context.Background()
+	ParamsFilter(ctx, c, NilChain)
 
 	if !reflect.DeepEqual(expectedValues, map[string][]string(c.Params.Values)) {
 		t.Errorf("Param values: (expected) %v != %v (actual)",

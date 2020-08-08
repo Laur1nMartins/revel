@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -43,11 +44,11 @@ func (f Flash) Success(msg string, args ...interface{}) {
 // FlashFilter is a Revel Filter that retrieves and sets the flash cookie.
 // Within Revel, it is available as a Flash attribute on Controller instances.
 // The name of the Flash cookie is set as CookiePrefix + "_FLASH".
-func FlashFilter(c *Controller, fc []Filter) {
+func FlashFilter(ctx context.Context, c *Controller, fc []Filter) {
 	c.Flash = restoreFlash(c.Request)
 	c.ViewArgs["flash"] = c.Flash.Data
 
-	fc[0](c, fc[1:])
+	fc[0](ctx, c, fc[1:])
 
 	// Store the flash.
 	var flashValue string

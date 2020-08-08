@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"io"
 	"reflect"
 )
@@ -14,7 +15,7 @@ var (
 	websocketType     = reflect.TypeOf((*ServerWebSocket)(nil)).Elem()
 )
 
-func ActionInvoker(c *Controller, _ []Filter) {
+func ActionInvoker(ctx context.Context, c *Controller, _ []Filter) {
 	// Instantiate the method.
 	methodValue := reflect.ValueOf(c.AppController).MethodByName(c.MethodType.Name)
 

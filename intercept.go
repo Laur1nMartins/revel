@@ -5,6 +5,7 @@
 package revel
 
 import (
+	"context"
 	"log"
 	"reflect"
 	"sort"
@@ -90,7 +91,7 @@ func (i Interception) Invoke(val reflect.Value, target *reflect.Value) reflect.V
 	return vals[0]
 }
 
-func InterceptorFilter(c *Controller, fc []Filter) {
+func InterceptorFilter(ctx context.Context, c *Controller, fc []Filter) {
 	defer invokeInterceptors(FINALLY, c)
 	defer func() {
 		if err := recover(); err != nil {
@@ -105,7 +106,7 @@ func InterceptorFilter(c *Controller, fc []Filter) {
 		return
 	}
 
-	fc[0](c, fc[1:])
+	fc[0](ctx, c, fc[1:])
 	invokeInterceptors(AFTER, c)
 }
 
