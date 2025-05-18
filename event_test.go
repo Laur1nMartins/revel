@@ -3,7 +3,7 @@ package revel_test
 import (
 	"testing"
 
-	"github.com/revel/revel"
+	"github.com/Laur1nMartins/revel"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -8,8 +8,8 @@ import (
 	"errors"
 	"time"
 
+	"github.com/Laur1nMartins/revel/logger"
 	"github.com/bradfitz/gomemcache/memcache"
-	"github.com/revel/revel/logger"
 )
 
 // MemcachedCache wraps the Memcached client to meet the Cache interface.

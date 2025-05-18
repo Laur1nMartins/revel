@@ -17,8 +17,8 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/Laur1nMartins/revel/logger"
 	"github.com/revel/pathtree"
-	"github.com/revel/revel/logger"
 )
 
 const (

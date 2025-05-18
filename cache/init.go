@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/revel/revel"
+	"github.com/Laur1nMartins/revel"
 )
 
 var cacheLog = revel.RevelLog.New("section", "cache")

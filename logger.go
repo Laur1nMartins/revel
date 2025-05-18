@@ -1,7 +1,7 @@
 package revel
 
 import (
-	"github.com/revel/revel/logger"
+	"github.com/Laur1nMartins/revel/logger"
 )
 
 // Logger.

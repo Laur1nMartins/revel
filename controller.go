@@ -16,9 +16,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/revel/revel/logger"
-	"github.com/revel/revel/session"
-	"github.com/revel/revel/utils"
+	"github.com/Laur1nMartins/revel/logger"
+	"github.com/Laur1nMartins/revel/session"
+	"github.com/Laur1nMartins/revel/utils"
 )
 
 // Controller Revel's controller structure that gets embedded in user defined
@@ -151,10 +151,10 @@ func (c *Controller) setStatusIfNil(status int) {
 //
 // For example:
 //
-//     func (c Users) ShowUser(id int) revel.Result {
-//     	 user := loadUser(id)
-//     	 return c.Render(user)
-//     }
+//	func (c Users) ShowUser(id int) revel.Result {
+//		 user := loadUser(id)
+//		 return c.Render(user)
+//	}
 //
 // This action will render views/Users/ShowUser.html, passing in an extra
 // key-value "user": (User).
@@ -343,9 +343,10 @@ func (c *Controller) RenderBinary(memfile io.Reader, filename string, delivery C
 }
 
 // Redirect to an action or to a URL.
-//   c.Redirect(Controller.Action)
-//   c.Redirect("/controller/action")
-//   c.Redirect("/controller/%d/action", id)
+//
+//	c.Redirect(Controller.Action)
+//	c.Redirect("/controller/action")
+//	c.Redirect("/controller/%d/action", id)
 func (c *Controller) Redirect(val interface{}, args ...interface{}) Result {
 	c.setStatusIfNil(http.StatusFound)
 

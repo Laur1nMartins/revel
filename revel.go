@@ -12,14 +12,14 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/Laur1nMartins/revel/logger"
+	"github.com/Laur1nMartins/revel/model"
 	"github.com/revel/config"
-	"github.com/revel/revel/logger"
-	"github.com/revel/revel/model"
 )
 
 const (
 	// RevelImportPath Revel framework import path.
-	RevelImportPath = "github.com/revel/revel"
+	RevelImportPath = "github.com/Laur1nMartins/revel"
 )
 
 const (
@@ -43,7 +43,7 @@ var (
 	DevMode bool   // if true, RunMode is a development mode.
 
 	// Revel installation details.
-	RevelPath string // e.g. "$GOPATH/src/github.com/revel/revel"
+	RevelPath string // e.g. "$GOPATH/src/github.com/Laur1nMartins/revel"
 
 	// Where to look for templates
 	// Ordered by priority. (Earlier paths take precedence over later paths.)
@@ -93,10 +93,11 @@ var (
 // Init initializes Revel -- it provides paths for getting around the app.
 //
 // Params:
-//   mode - the run mode, which determines which app.conf settings are used.
-//   importPath - the Go import path of the application.
-//   srcPath - the path to the source directory, containing Revel and the app.
-//     If not specified (""), then a functioning Go installation is required.
+//
+//	mode - the run mode, which determines which app.conf settings are used.
+//	importPath - the Go import path of the application.
+//	srcPath - the path to the source directory, containing Revel and the app.
+//	  If not specified (""), then a functioning Go installation is required.
 func Init(inputmode, importPath, srcPath string) {
 	RevelConfig = &model.RevelContainer{}
 	// Ignore trailing slashes.

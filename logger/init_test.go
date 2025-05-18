@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Laur1nMartins/revel/logger"
 	"github.com/revel/config"
-	"github.com/revel/revel/logger"
 	"github.com/stretchr/testify/assert"
 )
 

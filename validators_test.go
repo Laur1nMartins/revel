@@ -13,7 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/revel/revel"
+	"github.com/Laur1nMartins/revel"
 )
 
 const (
@@ -584,9 +584,9 @@ func TestFilePathOnlyFilePath(t *testing.T) {
 		"../../qwdqwdqwd/../qwdqwdqwd.txt": false,
 		`../../qwdqwdqwd/..
 				        /qwdqwdqwd.txt`: false,
-		"\t../../qwdqwdqwd/../qwdqwdqwd.txt": false,
-		`../../qwdqwdqwd/../qwdqwdqwd.txt`: false,
-		`../../qwdqwdqwd/../qwdqwdqwd.txt`: false,
+		"\t../../qwdqwdqwd/../qwdqwdqwd.txt":       false,
+		`../../qwdqwdqwd/../qwdqwdqwd.txt`:        false,
+		`../../qwdqwdqwd/../qwdqwdqwd.txt`:        false,
 		"../../etc/passwd":                         false,
 		"a.txt;rm -rf /":                           false,
 		"sudo rm -rf ../":                          false,
@@ -613,9 +613,9 @@ func TestFilePathAllowRelativePath(t *testing.T) {
 		"../../qwdqwdqwd/../qwdqwdqwd.txt": true,
 		`../../qwdqwdqwd/..
 				        /qwdqwdqwd.txt`: false,
-		"\t../../qwdqwdqwd/../qwdqwdqwd.txt": false,
-		`../../qwdqwdqwd/../qwdqwdqwd.txt`: false,
-		`../../qwdqwdqwd/../qwdqwdqwd.txt`: false,
+		"\t../../qwdqwdqwd/../qwdqwdqwd.txt":       false,
+		`../../qwdqwdqwd/../qwdqwdqwd.txt`:        false,
+		`../../qwdqwdqwd/../qwdqwdqwd.txt`:        false,
 		"../../etc/passwd":                         true,
 		"a.txt;rm -rf /":                           false,
 		"sudo rm -rf ../":                          true,

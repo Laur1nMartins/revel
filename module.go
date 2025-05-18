@@ -6,8 +6,8 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/Laur1nMartins/revel/logger"
 	"github.com/go-stack/stack"
-	"github.com/revel/revel/logger"
 )
 
 // Module specific functions.
