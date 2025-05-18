@@ -18,11 +18,11 @@ type InMemoryCache struct {
 	mu    sync.RWMutex // For increment / decrement prevent reads and writes
 }
 
-func NewInMemoryCache(defaultExpiration time.Duration) InMemoryCache {
-	return InMemoryCache{cache: *cache.New(defaultExpiration, time.Minute), mu: sync.RWMutex{}}
+func NewInMemoryCache(defaultExpiration time.Duration) *InMemoryCache {
+	return &InMemoryCache{cache: *cache.New(defaultExpiration, time.Minute), mu: sync.RWMutex{}}
 }
 
-func (c InMemoryCache) Get(key string, ptrValue interface{}) error {
+func (c *InMemoryCache) Get(key string, ptrValue interface{}) error {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 
@@ -42,11 +42,11 @@ func (c InMemoryCache) Get(key string, ptrValue interface{}) error {
 	return err
 }
 
-func (c InMemoryCache) GetMulti(keys ...string) (Getter, error) {
+func (c *InMemoryCache) GetMulti(keys ...string) (Getter, error) {
 	return c, nil
 }
 
-func (c InMemoryCache) Set(key string, value interface{}, expires time.Duration) error {
+func (c *InMemoryCache) Set(key string, value interface{}, expires time.Duration) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	// NOTE: go-cache understands the values of DefaultExpiryTime and ForEverNeverExpiry
@@ -54,7 +54,7 @@ func (c InMemoryCache) Set(key string, value interface{}, expires time.Duration)
 	return nil
 }
 
-func (c InMemoryCache) Add(key string, value interface{}, expires time.Duration) error {
+func (c *InMemoryCache) Add(key string, value interface{}, expires time.Duration) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	err := c.cache.Add(key, value, expires)
@@ -64,7 +64,7 @@ func (c InMemoryCache) Add(key string, value interface{}, expires time.Duration)
 	return err
 }
 
-func (c InMemoryCache) Replace(key string, value interface{}, expires time.Duration) error {
+func (c *InMemoryCache) Replace(key string, value interface{}, expires time.Duration) error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if err := c.cache.Replace(key, value, expires); err != nil {
@@ -73,7 +73,7 @@ func (c InMemoryCache) Replace(key string, value interface{}, expires time.Durat
 	return nil
 }
 
-func (c InMemoryCache) Delete(key string) error {
+func (c *InMemoryCache) Delete(key string) error {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 	if _, found := c.cache.Get(key); !found {
@@ -83,7 +83,7 @@ func (c InMemoryCache) Delete(key string) error {
 	return nil
 }
 
-func (c InMemoryCache) Increment(key string, n uint64) (newValue uint64, err error) {
+func (c *InMemoryCache) Increment(key string, n uint64) (newValue uint64, err error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if _, found := c.cache.Get(key); !found {
@@ -96,7 +96,7 @@ func (c InMemoryCache) Increment(key string, n uint64) (newValue uint64, err err
 	return c.convertTypeToUint64(key)
 }
 
-func (c InMemoryCache) Decrement(key string, n uint64) (newValue uint64, err error) {
+func (c *InMemoryCache) Decrement(key string, n uint64) (newValue uint64, err error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	if nv, err := c.convertTypeToUint64(key); err != nil {
@@ -114,7 +114,7 @@ func (c InMemoryCache) Decrement(key string, n uint64) (newValue uint64, err err
 	return c.convertTypeToUint64(key)
 }
 
-func (c InMemoryCache) Flush() error {
+func (c *InMemoryCache) Flush() error {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -123,39 +123,39 @@ func (c InMemoryCache) Flush() error {
 }
 
 // Fetches and returns the converted type to a uint64.
-func (c InMemoryCache) convertTypeToUint64(key string) (newValue uint64, err error) {
+func (c *InMemoryCache) convertTypeToUint64(key string) (newValue uint64, err error) {
 	v, found := c.cache.Get(key)
 	if !found {
 		return newValue, ErrCacheMiss
 	}
 
-	switch v.(type) {
+	switch v := v.(type) {
 	case int:
-		newValue = uint64(v.(int))
+		newValue = uint64(v)
 	case int8:
-		newValue = uint64(v.(int8))
+		newValue = uint64(v)
 	case int16:
-		newValue = uint64(v.(int16))
+		newValue = uint64(v)
 	case int32:
-		newValue = uint64(v.(int32))
+		newValue = uint64(v)
 	case int64:
-		newValue = uint64(v.(int64))
+		newValue = uint64(v)
 	case uint:
-		newValue = uint64(v.(uint))
+		newValue = uint64(v)
 	case uintptr:
-		newValue = uint64(v.(uintptr))
+		newValue = uint64(v)
 	case uint8:
-		newValue = uint64(v.(uint8))
+		newValue = uint64(v)
 	case uint16:
-		newValue = uint64(v.(uint16))
+		newValue = uint64(v)
 	case uint32:
-		newValue = uint64(v.(uint32))
+		newValue = uint64(v)
 	case uint64:
-		newValue = v.(uint64)
+		newValue = v
 	case float32:
-		newValue = uint64(v.(float32))
+		newValue = uint64(v)
 	case float64:
-		newValue = uint64(v.(float64))
+		newValue = uint64(v)
 	default:
 		err = ErrInvalidValue
 	}
